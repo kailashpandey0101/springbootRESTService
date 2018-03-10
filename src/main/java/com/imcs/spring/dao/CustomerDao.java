@@ -8,4 +8,5 @@ import com.imcs.spring.model.Customer;
 @Repository
 public interface CustomerDao extends CrudRepository<Customer, Long> {
 
+	Customer findCustomerById(Long id);
 }

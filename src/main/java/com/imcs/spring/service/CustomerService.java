@@ -10,7 +10,7 @@ import com.imcs.spring.dao.CustomerDao;
 import com.imcs.spring.model.Customer;
 
 @Service
-public class CustomerService implements ICustomerService{
+public class CustomerService implements ICustomerService {
 
 	@Autowired
 	private CustomerDao customerDao;
@@ -19,16 +19,26 @@ public class CustomerService implements ICustomerService{
 		return customerDao.findById(id);
 	}
 
-	public void addCustomer() {
-		Customer customer = new Customer("Kailash", "Pandey", "654-555-5555");
-		customerDao.save(customer);
+	public boolean addCustomer(Customer customer) {
+		return customerDao.save(customer) != null;
 	}
 
 	public List<Customer> getAllCustomers() {
 		return (List<Customer>) customerDao.findAll();
 	}
-	
+
 	public void deleteCustomer(Long id) {
 		customerDao.deleteById(id);
+	}
+
+	@Override
+	public void updateCustomer(Customer customer) {
+
+		Customer customerToUpdate = customerDao.findCustomerById(customer.getId());
+		customerToUpdate.setFirstName(customer.getFirstName());
+		customerToUpdate.setLastName(customer.getLastName());
+		customerToUpdate.setPhoneNumber(customer.getPhoneNumber());
+		customerDao.save(customerToUpdate);
+
 	}
 }

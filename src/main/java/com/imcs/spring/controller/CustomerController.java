@@ -3,9 +3,15 @@ package com.imcs.spring.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.swing.text.html.FormSubmitEvent.MethodType;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.imcs.spring.model.Customer;
@@ -18,25 +24,37 @@ public class CustomerController {
 	@Autowired
 	private ICustomerService customerService;
 
-	@RequestMapping("/add")
-	public String addCustomer() {
-		customerService.addCustomer();
-		return "Customer added";
+	@RequestMapping(method = RequestMethod.POST)
+	public ResponseEntity<?> addPerson(@RequestBody Customer customer) {
+		boolean flag = customerService.addCustomer(customer);
+		if (flag)
+			return new ResponseEntity(HttpStatus.CREATED);
+		else
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 	}
 
-	@RequestMapping("{id}")
+	@RequestMapping(value = "{id}", method = RequestMethod.GET, consumes = { "application/json" }, produces = {
+			"application/json" })
 	public Optional<Customer> getCustomerById(@PathVariable("id") Long id) {
 		return customerService.getCustomer(id);
 	}
 
-	@RequestMapping("/all")
-	public List<Customer> getAllCustomer() {
-		return customerService.getAllCustomers();
+	@RequestMapping(value = { "/", "" }, method = RequestMethod.GET)
+	public ResponseEntity<?> getAllCustomer() {
+		return new ResponseEntity(customerService.getAllCustomers(), HttpStatus.ACCEPTED);
 	}
 
-	@RequestMapping("/delete/{id}")
-	public String deleteCutomer(@PathVariable("id") Long id) {
+	@RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<?> deleteCustomer(@PathVariable("id") Long id) {
 		customerService.deleteCustomer(id);
-		return "customer deleted of id = " + id;
+		return new ResponseEntity(HttpStatus.ACCEPTED);
+	}
+
+	@RequestMapping(method = RequestMethod.PUT)
+	public ResponseEntity<?> updateCustomer(@RequestBody Customer customer) {
+		customerService.updateCustomer(customer);
+
+		return new ResponseEntity(HttpStatus.ACCEPTED);
+
 	}
 }

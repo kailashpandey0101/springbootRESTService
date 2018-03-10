@@ -9,9 +9,11 @@ public interface ICustomerService {
 
 	public Optional<Customer> getCustomer(Long id);
 
-	public void addCustomer();
+	boolean addCustomer(Customer customer);
 
 	public List<Customer> getAllCustomers();
 
 	public void deleteCustomer(Long id);
+
+	public void updateCustomer(Customer customer);
 }
